@@ -342,6 +342,7 @@ class Program
                         {
                             // Calls upon the method which connects to the database
                             Projects[projectInputInt -1].project_name = newProjectName;
+                            // Calls upon the method which connects to the database
                             PostgresDataAccess.EditProject(Projects[projectInputInt - 1]);
                             Console.WriteLine($"\n {newProjectName} has been updated successfully.");
                             Console.Write("\n Press any key to continue.");
@@ -364,6 +365,7 @@ class Program
                     Console.WriteLine("\n ==| Edit Hours Worked |==");
                     Console.WriteLine("\n Enter person to edit registered time:\n");
 
+                    // List the persons in the database
                     for (int i = 0; i < Persons.Count(); i++)
                     {
                         Console.WriteLine($" [{i + 1}] {Persons[i].person_name}");
@@ -382,18 +384,20 @@ class Program
                         Console.WriteLine("\n ==| Edit Hours Worked |==");
                         Console.WriteLine("\n Enter a registration number to edit:\n");
 
+                        // List the registrations of hours worked if it corresponds to input of person_id
                         foreach (ProjectPersonModel projectPerson in ProjectPersons)
                         {
                             if (projectPerson.person_id == Persons[personInputInt2 - 1].id)
                             {
+                                // Store objects in a new list to send the correct object as a parameter in a PostgresDataAccess function
                                 timeList.Add(projectPerson);
-                                Console.WriteLine($" [{i++}] Registration | Worked hours: {projectPerson.hours}");
+                                Console.WriteLine($" [{i++}] {Persons[personInputInt2 - 1].person_name} worked on project: {projectPerson.project_name} for {projectPerson.hours} hours");
                             }
                         }
 
+                        // ERROR catch
                         if (timeList.Count == 0)
                         {
-                            // ERROR catch
                             Console.Clear();
                             Console.WriteLine($"\n {Persons[personInputInt2 - 1].person_name} has not registered any worked time.");
                             Console.Write("\n Press any key to continue.");
@@ -412,10 +416,11 @@ class Program
                                 string newHoursWorked = Console.ReadLine();
                                 bool success5 = int.TryParse(newHoursWorked, out int newHoursWorkedInt);
 
-                                if (success5 && newHoursWorkedInt >= 1 && newHoursWorkedInt <= 24)
+                                if (success5 && newHoursWorkedInt >= 0 && newHoursWorkedInt <= 24)
                                 {
-                                    // Calls upon the method which connects to the database
+                                    // Change hours in object to new hours
                                     timeList[rowInputInt - 1].hours = newHoursWorkedInt;
+                                    // Calls upon the method which connects to the database
                                     PostgresDataAccess.EditHours(timeList[rowInputInt - 1]);
                                     Console.WriteLine($"\n {Persons[personInputInt2 - 1].person_name} hours has been updated successfully.");
                                     Console.Write("\n Press any key to continue.");
@@ -424,7 +429,7 @@ class Program
                                 else
                                 {
                                     // ERROR catch
-                                    Console.WriteLine("\n Hours cannot be less than 1 or exceed 24 hours.");
+                                    Console.WriteLine("\n Input cannot be a negative value or exceed 24 hours.");
                                     Console.Write("\n Press any key to continue.");
                                     Console.ReadLine();
                                 }
@@ -466,4 +471,5 @@ class Program
 
         } while (repeat);
     }
+
 }

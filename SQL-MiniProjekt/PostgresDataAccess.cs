@@ -53,14 +53,14 @@ namespace SQL_MiniProjekt
             }
         }
 
-        // Method that retrieves information about HOURS worked
+        // Method that retrieves INNER JOINS project_name with project_person table
         internal static List<ProjectPersonModel> LoadProjectPerson()
         {
             using (IDbConnection cnn = new NpgsqlConnection(LoadConnectionString()))
             {
                 try
                 {
-                    var output = cnn.Query<ProjectPersonModel>("SELECT * FROM sda_project_person", new DynamicParameters());
+                    var output = cnn.Query<ProjectPersonModel>("SELECT sda_project_person.*, sda_project.project_name FROM sda_project_person INNER JOIN sda_project ON sda_project_person.project_id = sda_project.id", new DynamicParameters());
                     return output.ToList();
                 }
                 catch (PostgresException e)
